@@ -3,6 +3,16 @@ const { misQueryMod } = require("../../helpers/dbconn");
 const req = require("express/lib/request");
 const { logger } = require("../../helpers/logger");
 
+shapeRouter.get("/getAllShapes", async (req, res, next) => {
+  try {
+    misQueryMod(`Select * from magodmis.shapes`, (err, data) => {
+      if (err) logger.error(err);
+      res.send(data);
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 shapeRouter.get("/getRowByShape", async (req, res, next) => {
   try {
     let shape = req.query.shape;
