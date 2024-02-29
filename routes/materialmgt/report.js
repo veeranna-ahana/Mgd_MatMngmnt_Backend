@@ -7,6 +7,7 @@ const { logger } = require("../../helpers/logger");
 reportRouter.get("/getDailyReportMaterialReceipt1", async (req, res, next) => {
   try {
     let date = req.query.date;
+    console.log("date", req.query.date);
     misQueryMod(
       `SELECT A.*,s.Shape,m.Mtrl_Rv_id,m.mtrl_code,m.material, m.qty, m.totalWeight, m.totalweightcalculated 
       FROM (SELECT m.RV_No, m.RV_Date, m.Customer, m.CustDocuNo,

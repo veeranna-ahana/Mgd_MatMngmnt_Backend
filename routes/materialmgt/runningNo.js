@@ -8,6 +8,7 @@ runningNoRouter.get("/getRunningNoBySrlType", async (req, res, next) => {
     let SrlType = req.query.SrlType;
     console.log("SrlType..........", SrlType);
     let Period = req.query.Period;
+
     // let UnitName = req.query.UnitName;
 
     // console.log("SrlType", SrlType);
@@ -126,6 +127,62 @@ runningNoRouter.post("/getAndInsertRunningNo", async (req, res, next) => {
       }
     );
   } catch (error) {
+    next(error);
+  }
+});
+
+runningNoRouter.post("/insertRunNoRow", async (req, res, next) => {
+  const { unit, srlType, ResetPeriod, ResetValue, VoucherNoLength } = req.body;
+
+  const unitName = `${unit}`;
+  const date = new Date();
+  // const date = new Date("2024-04-01");
+  const year = date.getFullYear();
+
+  const YearStartDate = new Date(`${year}-01-01`);
+  const YearEndDate = new Date(`${year}-12-31`);
+
+  const formattedStartDate = YearStartDate.toISOString().slice(0, 10);
+  const formattedEndDate = YearEndDate.toISOString().slice(0, 10);
+
+  try {
+    const selectQuery = `
+    SELECT COUNT(Id) FROM magod_setup.magod_runningno  WHERE SrlType='${srlType}'
+    AND UnitName='${unit}' AND Period='${year}'
+    `;
+
+    setupQueryMod(selectQuery, (selectError, selectResult) => {
+      if (selectError) {
+        logger.error(selectError);
+        return next(selectResult);
+      }
+
+      const count = selectResult[0]["COUNT(Id)"];
+
+      if (count === 0) {
+        // If count is 0, execute the INSERT query
+        const insertQuery = `
+        INSERT INTO magod_setup.magod_runningno
+        (UnitName, SrlType, ResetPeriod, ResetValue, EffectiveFrom_date, Reset_date, Running_No, Length, Period, Running_EffectiveDate)
+        VALUES ('${unit}', '${srlType}', '${ResetPeriod}', ${ResetValue}, '${formattedStartDate}', '${formattedEndDate}', ${ResetValue}, ${VoucherNoLength}, '${year}', CURDATE());
+
+        `;
+
+        // Execute the INSERT query
+        setupQueryMod(insertQuery, (insertError, insertResult) => {
+          if (insertError) {
+            logger.error(insertError);
+            return next(insertResult);
+          }
+
+          res.json({ message: "Record inserted successfully." });
+        });
+      } else {
+        res.json({ message: "Record already exists." });
+      }
+    });
+  } catch (error) {
+    console.error("An error occurred:", error);
     next(error);
   }
 });
