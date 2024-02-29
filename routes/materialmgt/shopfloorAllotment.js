@@ -32,6 +32,7 @@ shopFloorAllotmentRouter.get(
   async (req, res, next) => {
     try {
       let id = req.query.id;
+      console.log("CustBOM_Id", id);
       misQueryMod(
         `SELECT  Sum(m.QtyAccepted- m.QtyIssued - m.QtyReturned)  as QtyAvialable
           FROM magodmis.mtrl_part_receipt_details m,magodmis.material_receipt_register m1 

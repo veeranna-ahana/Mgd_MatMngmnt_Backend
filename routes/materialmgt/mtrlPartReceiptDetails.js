@@ -56,7 +56,7 @@ mtrlPartReceiptDetailsRouter.post(
 
 mtrlPartReceiptDetailsRouter.post(
   "/updatePartReceiptDetails",
-  async (req, res, next) => {
+  async (req, res, next) => { 
     try {
       let {
         id,
@@ -71,7 +71,7 @@ mtrlPartReceiptDetailsRouter.post(
         qtyAccepted,
         qtyIssued,
       } = req.body;
-      console.log("unitt wt", unitWeight);
+      console.log("req", req.body);
       /*console.log(
         `update mtrl_part_receipt_details set RVId = "${rvId}", CustBOM_Id = "${custBomId}", UnitWt = "${unitWeight}", QtyReceived = "${qtyReceived}", QtyRejected = "${qtyRejected}", QtyUsed = "${qtyUsed}", QtyReturned = "${qtyReturned}", PartId = "${partId}",QtyAccepted = "${qtyAccepted}", QtyIssued = "${qtyIssued}" where id = "${id}"`
       );*/
@@ -94,8 +94,9 @@ mtrlPartReceiptDetailsRouter.post(
     try {
       let { id } = req.body;
       //console.log(`delete from mtrl_part_receipt_details where id = ${id}`);
+      // console.log("delete id", req.body);
       misQueryMod(
-        `delete from mtrl_part_receipt_details where id = ${id}`,
+        `delete from mtrl_part_receipt_details where Id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
           res.send(data);
