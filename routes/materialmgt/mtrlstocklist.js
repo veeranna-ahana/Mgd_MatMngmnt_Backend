@@ -49,6 +49,7 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
     } = req.body;
 
     console.log("accepted", req.body.accepted);
+    console.log("Alll", req.body);
 
     let returnData = null;
     //find shape
