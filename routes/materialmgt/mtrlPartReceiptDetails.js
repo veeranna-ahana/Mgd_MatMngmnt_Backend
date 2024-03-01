@@ -56,7 +56,7 @@ mtrlPartReceiptDetailsRouter.post(
 
 mtrlPartReceiptDetailsRouter.post(
   "/updatePartReceiptDetails",
-  async (req, res, next) => { 
+  async (req, res, next) => {
     try {
       let {
         id,
