@@ -8,6 +8,7 @@ shopFloorAllotmentRouter.get(
   async (req, res, next) => {
     try {
       let id = req.query.id;
+      console.log("id", id);
       misQueryMod(
         `SELECT c1.id,c2.PartId,c1.Quantity as QtyPerAssy, c2.Id As CustBOM_Id,
           n.Sheets*c1.Quantity as QtyRequired, n.NC_Pgme_Part_ID, n.QtyRejected
