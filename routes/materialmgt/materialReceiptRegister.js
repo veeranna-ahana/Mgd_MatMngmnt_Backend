@@ -42,7 +42,7 @@ materialReceiptRegisterRouter.get(
   async (req, res, next) => {
     try {
       let id = req.query.id;
-      console.log("id", id);
+      // console.log("id", id);
       // console.log(`SELECT * FROM material_receipt_register where RvID = ${id}`);
       misQueryMod(
         `SELECT * FROM material_receipt_register where RvID = ${id} order by RvID`,
@@ -97,7 +97,7 @@ materialReceiptRegisterRouter.post(
 materialReceiptRegisterRouter.post(
   "/updateHeaderMaterialReceiptRegister",
   async (req, res, next) => {
-    console.log("calcWeight", req.body.calcWeight);
+    // console.log("calcWeight", req.body.calcWeight);
     try {
       let {
         rvId,

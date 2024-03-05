@@ -9,6 +9,7 @@ mtrlReceiptDetailsRouter.get(
   async (req, res, next) => {
     try {
       let id = req.query.id;
+      // console.log("Mtrl_Rv_id", id);
       //console.log(`SELECT * FROM mtrl_part_receipt_details where RvID = ${id}`);
       misQueryMod(
         `SELECT * FROM mtrlreceiptdetails where Mtrl_Rv_id = ${id}`,
@@ -48,7 +49,7 @@ mtrlReceiptDetailsRouter.get(
 mtrlReceiptDetailsRouter.post(
   "/insertMtrlReceiptDetails",
   async (req, res, next) => {
-    console.log("srl", req.body.srl);
+    // console.log("srl", req.body.srl);
 
     try {
       let {
@@ -154,7 +155,7 @@ mtrlReceiptDetailsRouter.post(
       } = req.body;
       inspected = inspected == true ? "1" : "0";
 
-      console.log("totalWeight", req.body.totalWeight);
+      // console.log("totalWeight", req.body.totalWeight);
 
       misQueryMod(
         `UPDATE mtrlreceiptdetails SET 
@@ -190,12 +191,11 @@ mtrlReceiptDetailsRouter.post(
   async (req, res, next) => {
     // console.log("shapeID", req.body.shapeID);
     // console.log("material", req.body.material);
-    console.log("materialCode", req.body.mtrlCode);
 
     try {
       let {
         id,
-        rvId,
+
         srl,
         custCode,
         mtrlCode,
@@ -220,8 +220,10 @@ mtrlReceiptDetailsRouter.post(
       } = req.body;
       inspected = inspected == "on" ? "1" : "0";
 
+      // console.log("updateMtrlReceiptDetails", req.body);
+
       misQueryMod(
-        `update mtrlreceiptdetails set RvID = "${rvId}", Srl = "${srl}",Cust_Code = "${custCode}",Mtrl_Code = "${mtrlCode}",Material = "${material}",ShapeMtrlID = ${shapeMtrlId},ShapeID = ${shapeID}, DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2},DynamicPara3 = ${dynamicPara3},Qty = ${qty},Inspected = ${inspected},Accepted = ${accepted}, TotalWeightCalculated = ${totalWeightCalculated},TotalWeight = ${totalWeight},LocationNo = "${locationNo}",Updated = "${updated}",QtyRejected = "${qtyRejected}",QtyUsed = "${qtyUsed}",QtyReturned = "${qtyReturned}" where Mtrl_Rv_id = ${id}`,
+        `update mtrlreceiptdetails set Srl = "${srl}",Cust_Code = "${custCode}",Mtrl_Code = "${mtrlCode}",Material = "${material}",ShapeMtrlID = ${shapeMtrlId},ShapeID = ${shapeID}, DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2},DynamicPara3 = ${dynamicPara3},Qty = ${qty},Inspected = ${inspected},Accepted = ${accepted}, TotalWeightCalculated = ${totalWeightCalculated},TotalWeight = ${totalWeight},LocationNo = "${locationNo}",UpDated = "${updated}",QtyRejected = "${qtyRejected}",QtyUsed = "${qtyUsed}",QtyReturned = "${qtyReturned}" where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
 

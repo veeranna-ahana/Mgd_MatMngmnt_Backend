@@ -222,7 +222,7 @@ mtrlStockListRouter.post("/updateAfterRemoveStock", (req, res, next) => {
               SELECT  m.Cust_Code, m.Customer, m.RV_Date, m.Material, ROUND(SUM(m.TotalWeightCalculated), 2) as tw, m.Rv_no, m.RvID, m.Cust_Docu_No, 'Receive'
               FROM magodmis.mtrlreceiptdetails m
             WHERE m.Rvid = '${rvId}' AND m.UpDated
-            GROUP BY m.Material`;
+            GROUP BY m.Cust_Code, m.Customer, m.RV_Date, m.Material, m.Rv_no, m.RvID, m.Cust_Docu_No`;
 
           misQueryMod(insertQuery1, (insertErr, insertData) => {
             if (insertErr) {
@@ -246,7 +246,7 @@ mtrlStockListRouter.post("/updateAfterRemoveStock", (req, res, next) => {
           const insertQuery2 = `INSERT INTO magodmis.customer_material_return_register(Cust_Code, Cust_Name, MDate, Mtrl_Type, Weight, Rv_No, RvID, Cust_Dc_No, txnType)
             SELECT  m.Cust_Code, m.Customer, m.RV_Date, m.Material, ROUND(SUM(m.TotalWeightCalculated), 2) as tw, m.Rv_no, m.RvID, m.Cust_Docu_No, 'Receive'
             FROM magodmis.mtrlreceiptdetails m
-            WHERE m.Rvid = '${rvId}' AND m.UpDated GROUP BY m.Material`;
+            WHERE m.Rvid = '${rvId}' AND m.UpDated GROUP BY m.Cust_Code, m.Customer, m.RV_Date, m.Material, m.Rv_no, m.RvID, m.Cust_Docu_No`;
 
           misQueryMod(insertQuery2, (insertErr, insertData) => {
             if (insertErr) {
