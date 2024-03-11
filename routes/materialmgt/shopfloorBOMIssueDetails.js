@@ -15,12 +15,14 @@ shopfloorBOMIssueDetailsRouter.post(
         QtyReturned,
         QtyUsed,
       } = req.body;
+      console.log("BOMIssueDetails", req.body);
       misQueryMod(
         `INSERT INTO magodmis.shopfloor_bom_issuedetails
         (IV_ID, RV_Id, PartReceipt_DetailsID, QtyIssued,QtyReturned,QtyUsed) 
         Values(${IV_ID}, ${RV_Id}, ${PartReceipt_DetailsID}, ${QtyIssued}, ${QtyReturned}, ${QtyUsed})`,
         (err, data) => {
           if (err) logger.error(err);
+          // console.log("BOMIssueDetails", data);
           res.send(data);
         }
       );

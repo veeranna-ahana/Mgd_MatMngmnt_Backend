@@ -54,10 +54,14 @@ shopFloorIssueRouter.get(
       console.log("custCode", custCode);
 
       misQueryMod(
+        // `SELECT s.*, m.PartId, m1.RV_No,m1.CustDocuNo FROM
+        // magodmis.shopfloor_bom_issuedetails s,magodmis.mtrl_part_receipt_details m,
+        // magodmis.material_receipt_register m1 WHERE m.Id=s.PartReceipt_DetailsID
+        // AND m1.RvID=s.RV_Id AND s.IV_ID=${id} and m1.Cust_Code = '${custCode}'`,
         `SELECT s.*, m.PartId, m1.RV_No,m1.CustDocuNo FROM
         magodmis.shopfloor_bom_issuedetails s,magodmis.mtrl_part_receipt_details m,
-        magodmis.material_receipt_register m1 WHERE m.Id=s.PartReceipt_DetailsID 
-        AND m1.RvID=s.RV_Id AND s.IV_ID=${id} and m1.Cust_Code = '${custCode}'`,
+        magodmis.material_receipt_register m1 WHERE m.Id=s.PartReceipt_DetailsID
+        AND m1.RvID=s.RV_Id AND s.IV_ID=${id}`,
         (err, data) => {
           if (err) logger.error(err);
           res.send(data);
