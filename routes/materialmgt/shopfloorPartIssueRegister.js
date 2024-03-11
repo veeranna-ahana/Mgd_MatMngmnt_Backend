@@ -34,12 +34,15 @@ shopfloorPartIssueRegisterRouter.post(
         QtyUsed,
         Ncid,
       } = req.body;
+
+      // console.log("register", req.body);
       misQueryMod(
         `INSERT INTO magodmis.shopfloor_part_issueregister
-                (IV_No, Issue_date, NC_ProgramNo, QtyIssued,QtyReturned,QtyUsed,Ncid) Values
-                (${IV_No}, "${Issue_date}", ${NC_ProgramNo}, ${QtyIssued},${QtyReturned},${QtyUsed},${Ncid})`,
+          (IV_No, Issue_date, NC_ProgramNo, QtyIssued,QtyReturned,QtyUsed,Ncid) Values
+          (${IV_No}, "${Issue_date}", ${NC_ProgramNo}, ${QtyIssued},${QtyReturned},${QtyUsed},${Ncid})`,
         (err, data) => {
           if (err) logger.error(err);
+          console.log("register", data);
           res.send(data);
         }
       );
