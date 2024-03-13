@@ -51,7 +51,7 @@ shopFloorIssueRouter.get(
       let id = req.query.id;
       let custCode = req.query.custCode;
 
-      console.log("custCode", custCode);
+      // console.log("custCode", custCode);
 
       misQueryMod(
         // `SELECT s.*, m.PartId, m1.RV_No,m1.CustDocuNo FROM
@@ -78,6 +78,7 @@ shopFloorIssueRouter.get(
   async (req, res, next) => {
     try {
       let status = req.query.status;
+      console.log("status", status);
 
       misQueryMod(
         `SELECT s.*, c.Cust_Name, n.TaskNo, n.NcId, n.Machine, n.Operation,
@@ -117,6 +118,7 @@ shopFloorIssueRouter.get(
     }
   }
 );
+
 shopFloorIssueRouter.get(
   "/getShopMaterialIssueVoucherTable",
   async (req, res, next) => {
