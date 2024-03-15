@@ -11,8 +11,8 @@ shopfloorMaterialIssueRegisterRouter.post(
         req.body;
       misQueryMod(
         `INSERT INTO magodmis.shopfloor_material_issueregister
-                (IV_No, Issue_date, NC_ProgramNo, QtyIssued,QtyReturned,Ncid) Values
-                (${IV_No}, "${Issue_date}", ${NC_ProgramNo}, ${QtyIssued},${QtyReturned},${Ncid})`,
+                (IV_No, Issue_date, NC_ProgramNo, QtyIssued,QtyReturned,Ncid, Issue_time) Values
+                (${IV_No}, "${Issue_date}", ${NC_ProgramNo}, ${QtyIssued},${QtyReturned},${Ncid}, CURTIME())`,
         (err, data) => {
           if (err) logger.error(err);
           res.send(data);
