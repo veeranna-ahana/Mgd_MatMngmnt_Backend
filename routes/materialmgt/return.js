@@ -33,7 +33,7 @@ returnRouter.get("/profileMaterialFirst", async (req, res, next) => {
             magodmis.material_receipt_register m1
         WHERE
             (m.Scrap OR NOT m.Locked)
-                AND m.IV_No IS NULL
+                AND m.Issue = 0
                 AND m.Cust_Code = ${Cust_Code}
                 AND m1.Rv_No = m.rv_No
                 AND m1.RVStatus = 'Received'
@@ -87,12 +87,12 @@ returnRouter.get("/profileMaterialSecond", async (req, res, next) => {
       magodmis.mtrlstocklist m,
       magodmis.material_receipt_register m1
   WHERE
-      (m.Scrap OR NOT m.Locked)
-          AND m.IV_No IS NULL
-          AND m.Cust_Code = ${Cust_Code}
-          AND m1.Rv_No = m.rv_No
-          AND m1.RVStatus = 'Received'
-          ORDER BY m.MtrlStockID`,
+    (m.Scrap OR NOT m.Locked)
+    AND m.Issue = 0
+    AND m.Cust_Code = ${Cust_Code}
+    AND m1.Rv_No = m.rv_No
+    AND m1.RVStatus = 'Received'
+  ORDER BY m.MtrlStockID`,
 
       // `SELECT
       //     m1.RVId,
