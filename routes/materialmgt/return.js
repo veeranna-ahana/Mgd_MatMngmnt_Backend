@@ -69,11 +69,13 @@ returnRouter.get("/profileMaterialSecond", async (req, res, next) => {
     misQueryMod(
       `SELECT 
       m1.RVId,
-      m.Mtrl_Rv_id,
       m1.Cust_Code,
       m1.RV_No,
       m1.CustDocuNo AS Cust_Docu_No,
+      m1.Type,
+      m.Mtrl_Rv_id,
       m.Mtrl_Code,
+      m.Material,
       m.DynamicPara1,
       m.DynamicPara2,
       m.DynamicPara3,
