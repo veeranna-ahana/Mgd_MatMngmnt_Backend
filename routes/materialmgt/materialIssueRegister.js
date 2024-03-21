@@ -399,6 +399,7 @@ materialIssueRegisterRouter.get(
   "/getMaterialIssueRegisterRouterByIVID",
   async (req, res, next) => {
     let id = req.query.id;
+
     try {
       await misQueryMod(
         `Select *,
