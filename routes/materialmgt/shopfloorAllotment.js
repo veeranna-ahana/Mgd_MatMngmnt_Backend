@@ -56,7 +56,7 @@ shopFloorAllotmentRouter.get(
   async (req, res, next) => {
     try {
       let bomids = req.query.bomids;
-      console.log("ids = ", bomids);
+      // console.log("ids = ", bomids);
       misQueryMod(
         `SELECT m.*, m1.RV_No, m1.RV_Date 
         FROM magodmis.mtrl_part_receipt_details m,magodmis.material_receipt_register m1 
