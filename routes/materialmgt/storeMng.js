@@ -134,13 +134,31 @@ storeRouter.get("/getStockListByCustCodeFirst", async (req, res, next) => {
   let code = req.query.code;
   try {
     misQueryMod(
-      `SELECT m.Cust_Code, m1.Material, count(m.MtrlStockID) as Qty, 
-      Sum(m.Weight) as Weight, sum(m.ScrapWeight) as ScrapWeight 
-     FROM magodmis.mtrlstocklist m,magodmis.mtrlgrades m1, magodmis.mtrl_data m2 
-     WHERE m.Cust_Code= ${code} AND m.IV_No is  null AND m2.Mtrl_Code=m.Mtrl_Code
-     AND m1.MtrlGradeID=m2.MtrlGradeID 
-     GROUP BY m1.Material
-     ORDER BY m1.Material`,
+      `SELECT 
+        m.Cust_Code,
+        m1.Material,
+        COUNT(m.MtrlStockID) AS Qty,
+        SUM(m.Weight) AS Weight,
+        SUM(m.ScrapWeight) AS ScrapWeight
+        FROM
+        magodmis.mtrlstocklist m,
+        magodmis.mtrlgrades m1,
+        magodmis.mtrl_data m2
+        WHERE
+        m.Cust_Code = ${code}
+            AND (m.IV_No IS NULL OR m.IV_No = '')
+            AND m2.Mtrl_Code = m.Mtrl_Code
+            AND m1.MtrlGradeID = m2.MtrlGradeID
+        GROUP BY m1.Material
+        ORDER BY m1.Material`,
+
+      //   `SELECT m.Cust_Code, m1.Material, count(m.MtrlStockID) as Qty,
+      //   Sum(m.Weight) as Weight, sum(m.ScrapWeight) as ScrapWeight
+      //  FROM magodmis.mtrlstocklist m,magodmis.mtrlgrades m1, magodmis.mtrl_data m2
+      //  WHERE m.Cust_Code= ${code} AND m.IV_No is  null AND m2.Mtrl_Code=m.Mtrl_Code
+      //  AND m1.MtrlGradeID=m2.MtrlGradeID
+      //  GROUP BY m1.Material
+      //  ORDER BY m1.Material`,
       (err, data) => {
         if (err) logger.error(err);
         res.send(data);
@@ -155,14 +173,32 @@ storeRouter.get("/getStockListByCustCodeSecond", async (req, res, next) => {
   let code = req.query.code;
   try {
     misQueryMod(
-      `SELECT m.Cust_Code,m.Mtrl_Code, m1.Material,
-      count(m.MtrlStockID) as Qty, 
-       Sum(m.Weight) as Weight, sum(m.ScrapWeight) as ScrapWeight 
-      FROM magodmis.mtrlstocklist m,magodmis.mtrlgrades m1, magodmis.mtrl_data m2 
-      WHERE m.Cust_Code= ${code} AND m.IV_No is  null AND m2.Mtrl_Code=m.Mtrl_Code
-      AND m1.MtrlGradeID=m2.MtrlGradeID 
-      GROUP BY  m1.Material,m.Mtrl_Code 
-      ORDER BY m.Mtrl_Code`,
+      `SELECT 
+      m.Cust_Code,
+      m.Mtrl_Code,
+      m1.Material,
+      COUNT(m.MtrlStockID) AS Qty,
+      SUM(m.Weight) AS Weight,
+      SUM(m.ScrapWeight) AS ScrapWeight
+  FROM
+      magodmis.mtrlstocklist m,
+      magodmis.mtrlgrades m1,
+      magodmis.mtrl_data m2
+  WHERE
+      m.Cust_Code = ${code}
+          AND (m.IV_No IS NULL OR m.IV_No = '')
+          AND m2.Mtrl_Code = m.Mtrl_Code
+          AND m1.MtrlGradeID = m2.MtrlGradeID
+  GROUP BY m1.Material , m.Mtrl_Code
+  ORDER BY m.Mtrl_Code`,
+      // `SELECT m.Cust_Code,m.Mtrl_Code, m1.Material,
+      // count(m.MtrlStockID) as Qty,
+      //  Sum(m.Weight) as Weight, sum(m.ScrapWeight) as ScrapWeight
+      // FROM magodmis.mtrlstocklist m,magodmis.mtrlgrades m1, magodmis.mtrl_data m2
+      // WHERE m.Cust_Code= ${code} AND m.IV_No is  null AND m2.Mtrl_Code=m.Mtrl_Code
+      // AND m1.MtrlGradeID=m2.MtrlGradeID
+      // GROUP BY  m1.Material,m.Mtrl_Code
+      // ORDER BY m.Mtrl_Code`,
       (err, data) => {
         if (err) logger.error(err);
         res.send(data);
@@ -177,14 +213,38 @@ storeRouter.get("/getStockListByCustCodeThird", async (req, res, next) => {
   let code = req.query.code;
   try {
     misQueryMod(
-      `SELECT m.Cust_Code,m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2,
-      m.DynamicPara3, m.Locked, m.Scrap, m1.Material, count(m.MtrlStockID) as Qty, 
-       Sum(m.Weight) as Weight, sum(m.ScrapWeight) as ScrapWeight 
-      FROM magodmis.mtrlstocklist m,magodmis.mtrlgrades m1, magodmis.mtrl_data m2 
-      WHERE m.Cust_Code= ${code} AND m.IV_No is  null AND m2.Mtrl_Code=m.Mtrl_Code
-      AND m1.MtrlGradeID=m2.MtrlGradeID 
-      GROUP BY m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2, m.DynamicPara3, m.Locked, m.Scrap
-      ORDER BY m.Scrap Desc , m.Mtrl_Code`,
+      `SELECT 
+        m.Cust_Code,
+        m.Mtrl_Code,
+        m.DynamicPara1,
+        m.DynamicPara2,
+        m.DynamicPara3,
+        m.Locked,
+        m.Scrap,
+        m1.Material,
+        COUNT(m.MtrlStockID) AS Qty,
+        SUM(m.Weight) AS Weight,
+        SUM(m.ScrapWeight) AS ScrapWeight
+        FROM
+        magodmis.mtrlstocklist m,
+        magodmis.mtrlgrades m1,
+        magodmis.mtrl_data m2
+        WHERE
+        m.Cust_Code = ${code}
+            AND (m.IV_No IS NULL OR m.IV_No = '')
+            AND m2.Mtrl_Code = m.Mtrl_Code
+            AND m1.MtrlGradeID = m2.MtrlGradeID
+        GROUP BY m.Mtrl_Code , m.DynamicPara1 , m.DynamicPara2 , m.DynamicPara3 , m.Locked , m.Scrap
+        ORDER BY m.Scrap DESC , m.Mtrl_Code`,
+
+      // `SELECT m.Cust_Code,m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2,
+      // m.DynamicPara3, m.Locked, m.Scrap, m1.Material, count(m.MtrlStockID) as Qty,
+      //  Sum(m.Weight) as Weight, sum(m.ScrapWeight) as ScrapWeight
+      // FROM magodmis.mtrlstocklist m,magodmis.mtrlgrades m1, magodmis.mtrl_data m2
+      // WHERE m.Cust_Code= ${code} AND m.IV_No is  null AND m2.Mtrl_Code=m.Mtrl_Code
+      // AND m1.MtrlGradeID=m2.MtrlGradeID
+      // GROUP BY m.Mtrl_Code, m.DynamicPara1, m.DynamicPara2, m.DynamicPara3, m.Locked, m.Scrap
+      // ORDER BY m.Scrap Desc , m.Mtrl_Code`,
       (err, data) => {
         if (err) logger.error(err);
         res.send(data);
