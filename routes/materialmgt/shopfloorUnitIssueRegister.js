@@ -1,5 +1,5 @@
 const shopfloorUnitIssueRegisterRouter = require("express").Router();
-const { misQueryMod } = require("../../helpers/dbconn");
+const { misQueryMod, setupQueryMod } = require("../../helpers/dbconn");
 const req = require("express/lib/request");
 const { logger } = require("../../helpers/logger");
 
@@ -42,5 +42,22 @@ shopfloorUnitIssueRegisterRouter.get(
     }
   }
 );
+
+shopfloorUnitIssueRegisterRouter.get("/getPDFData", async (req, res, next) => {
+  try {
+    setupQueryMod(
+      `SELECT * FROM magod_setup.magodlaser_units`,
+      (err, pdfData) => {
+        if (err) {
+          console.log("err", err);
+        } else {
+          res.send(pdfData);
+        }
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = shopfloorUnitIssueRegisterRouter;
