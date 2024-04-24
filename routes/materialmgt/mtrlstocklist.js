@@ -88,24 +88,9 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
 
 // mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
 //   try {
-//     let { rvNo } = req.body;
-//     console.log("rvNo", req.body.rvNo);
-//     misQueryMod(
-//       `delete from magodmis.mtrlstocklist where RV_No =  "${rvNo}"`,
-//       (err, data) => {
-//         if (err) logger.error(err);
-//         res.send(data);
-//       }
-//     );
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+//     const { Mtrl_Rv_id } = req.body;
 
-// mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
-//   try {
-//     const { Mtrl_Rv_id, Mtrl_Code, Accepted } = req.body;
-//     console.log("Mtrl_Rv_id", req.body.Mtrl_Rv_id);
+//     let countResult, inUseResult, deletionResult;
 
 //     // Query to check count of material stock
 //     misQueryMod(
@@ -113,44 +98,53 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
 //       (err, result) => {
 //         if (err) {
 //           logger.error(err);
-//           res.send(result);
+//           return res.send(err);
 //         }
-//         // console.log("Count Result:", result);
-//       }
-//     );
+//         countResult = result;
 
-//     // Query to check if material is in use for production
-//     misQueryMod(
-//       `SELECT COUNT(*) AS inUseCount FROM magodmis.mtrlstocklist WHERE Mtrl_Rv_id = '${Mtrl_Rv_id}' AND (Locked OR Scrap OR Issue)`,
-//       (err, inUseResult) => {
-//         if (err) {
-//           logger.error(err);
-//           res.send(inUseResult);
-//         }
-//         // console.log("In Use Result:", inUseResult);
-//       }
-//     );
+//         // Query to check if material is in use for production
+//         misQueryMod(
+//           `SELECT COUNT(*) AS inUseCount FROM magodmis.mtrlstocklist WHERE Mtrl_Rv_id = '${Mtrl_Rv_id}' AND (Locked OR Scrap OR Issue)`,
+//           (err, result) => {
+//             if (err) {
+//               logger.error(err);
+//               return res.send(err);
+//             }
+//             inUseResult = result;
 
-//     // Query to delete material stock
-//     misQueryMod(
-//       `DELETE FROM magodmis.MtrlStockList WHERE Mtrl_Rv_id = '${Mtrl_Rv_id}'`,
-//       (err, data) => {
-//         if (err) {
-//           logger.error(err);
-//           res.send(data);
-//         }
-//         console.log("Deletion Result:", data);
-//         // Here you can perform further operations or return the result if needed
+//             // Query to delete material stock
+//             misQueryMod(
+//               `DELETE FROM magodmis.MtrlStockList WHERE Mtrl_Rv_id = '${Mtrl_Rv_id}'`,
+//               (err, result) => {
+//                 if (err) {
+//                   logger.error(err);
+//                   return res.send(err);
+//                 }
+//                 deletionResult = result;
+//                 // console.log("Deletion Result:", deletionResult);
+
+//                 // Send combined response
+//                 const combinedResult = {
+//                   countResult: countResult,
+//                   inUseResult: inUseResult,
+//                   deletionResult: deletionResult,
+//                 };
+//                 return res.send(combinedResult);
+//               }
+//             );
+//           }
+//         );
 //       }
 //     );
 //   } catch (error) {
-//     next(error);
+//     logger.error(error);
+//     return res.send(error);
 //   }
 // });
 
 mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
   try {
-    const { Mtrl_Rv_id } = req.body;
+    const { Mtrl_Rv_id, Mtrl_Code, Accepted } = req.body;
 
     let countResult, inUseResult, deletionResult;
 
@@ -174,26 +168,38 @@ mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
             }
             inUseResult = result;
 
-            // Query to delete material stock
-            misQueryMod(
-              `DELETE FROM magodmis.MtrlStockList WHERE Mtrl_Rv_id = '${Mtrl_Rv_id}'`,
-              (err, result) => {
-                if (err) {
-                  logger.error(err);
-                  return res.send(err);
-                }
-                deletionResult = result;
-                // console.log("Deletion Result:", deletionResult);
+            // Check conditions similar to React code
+            if (countResult[0].count < parseFloat(Accepted)) {
+              return res.send({
+                error:
+                  "Received Material Already used, to return create a Issue Voucher",
+              });
+            } else if (inUseResult[0].inUseCount > 0) {
+              return res.send({
+                error:
+                  "Material already in use for production, cannot take out from stock",
+              });
+            } else {
+              // Query to delete material stock
+              misQueryMod(
+                `DELETE FROM magodmis.MtrlStockList WHERE Mtrl_Rv_id = '${Mtrl_Rv_id}'`,
+                (err, result) => {
+                  if (err) {
+                    logger.error(err);
+                    return res.send(err);
+                  }
+                  deletionResult = result;
 
-                // Send combined response
-                const combinedResult = {
-                  countResult: countResult,
-                  inUseResult: inUseResult,
-                  deletionResult: deletionResult,
-                };
-                return res.send(combinedResult);
-              }
-            );
+                  // Send combined response
+                  const combinedResult = {
+                    countResult: countResult,
+                    inUseResult: inUseResult,
+                    deletionResult: deletionResult,
+                  };
+                  return res.send(combinedResult);
+                }
+              );
+            }
           }
         );
       }

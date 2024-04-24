@@ -239,11 +239,11 @@ mtrlReceiptDetailsRouter.post(
 mtrlReceiptDetailsRouter.post(
   "/updateMtrlReceiptDetailsUpdated",
   async (req, res, next) => {
-    // console.log("requpdate2", req.body);
+    console.log("requpdate2", req.body);
     try {
       let { id, upDated } = req.body;
       misQueryMod(
-        `update mtrlreceiptdetails set Updated = ${upDated} where Mtrl_Rv_id = ${id}`,
+        `update mtrlreceiptdetails set UpDated = ${upDated} where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
           // console.log("data", data);
