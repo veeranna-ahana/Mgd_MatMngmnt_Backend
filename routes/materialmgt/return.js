@@ -15,29 +15,29 @@ returnRouter.get("/profileMaterialFirst", async (req, res, next) => {
         } else {
           misQueryMod(
             `SELECT 
-            m1.Rv_date,
-            m.Mtrl_Rv_id,
-            m1.Cust_Code,
-            m1.RV_No,
-            m1.CustDocuNo AS Cust_Docu_No,
-            m.Mtrl_Code,
-            m.DynamicPara1,
-            m.DynamicPara2,
-            m.DynamicPara3,
-            m.Scrap,
-            SUM(m.Weight) AS Weight,
-            SUM(m.ScrapWeight) AS ScrapWeight,
-            COUNT(m.MtrlStockID) AS InStock
-        FROM
-            magodmis.mtrlstocklist m,
-            magodmis.material_receipt_register m1
-        WHERE
-            (m.Scrap OR NOT m.Locked)
-                AND m.Issue = 0
-                AND m.Cust_Code = ${Cust_Code}
-                AND m1.Rv_No = m.rv_No
-                AND m1.RVStatus = 'Received'
-        GROUP BY m.Mtrl_Rv_id , m.Mtrl_Code , m.DynamicPara1 , m.DynamicPara2 , m.Scrap`,
+              m1.Rv_date,
+              m.Mtrl_Rv_id,
+              m1.Cust_Code,
+              m1.RV_No,
+              m1.CustDocuNo AS Cust_Docu_No,
+              m.Mtrl_Code,
+              m.DynamicPara1,
+              m.DynamicPara2,
+              m.DynamicPara3,
+              m.Scrap,
+              SUM(m.Weight) AS Weight,
+              SUM(m.ScrapWeight) AS ScrapWeight,
+              COUNT(m.MtrlStockID) AS InStock
+            FROM
+                magodmis.mtrlstocklist m,
+                magodmis.material_receipt_register m1
+            WHERE
+                    m.Issue = 0
+                    AND m.Cust_Code = ${Cust_Code}
+                    AND m1.Rv_No = m.rv_No
+                    AND m1.RVStatus = 'Received'
+            GROUP BY m.Mtrl_Rv_id , m.Mtrl_Code , m.DynamicPara1 , m.DynamicPara2 , m.Scrap
+            ORDER BY m.Mtrl_Rv_id DESC`,
 
             //   `SELECT m1.RvID,m1.Rv_date,m.Mtrl_Rv_id, m1.Cust_Code, m1.RV_No, m1.CustDocuNo as Cust_Docu_No, m.Mtrl_Code,
             //   m.DynamicPara1, m.DynamicPara2, m.DynamicPara3, m.Scrap, m1.TotalWeight, m1.TotalCalculatedWeight, m.Material, m.Shape,
@@ -68,31 +68,30 @@ returnRouter.get("/profileMaterialSecond", async (req, res, next) => {
     let Cust_Code = req.query.Cust_Code;
     misQueryMod(
       `SELECT 
-      m1.RVId,
-      m1.Cust_Code,
-      m1.RV_No,
-      m1.CustDocuNo AS Cust_Docu_No,
-      m1.Type,
-      m.Mtrl_Rv_id,
-      m.Mtrl_Code,
-      m.Material,
-      m.DynamicPara1,
-      m.DynamicPara2,
-      m.DynamicPara3,
-      m.Scrap,
-      m.Weight,
-      m.ScrapWeight,
-      m.MtrlStockID
-  FROM
-      magodmis.mtrlstocklist m,
-      magodmis.material_receipt_register m1
-  WHERE
-    (m.Scrap OR NOT m.Locked)
-    AND m.Issue = 0
-    AND m.Cust_Code = ${Cust_Code}
-    AND m1.Rv_No = m.rv_No
-    AND m1.RVStatus = 'Received'
-  ORDER BY m.MtrlStockID`,
+          m1.RVId,
+          m1.Cust_Code,
+          m1.RV_No,
+          m1.CustDocuNo AS Cust_Docu_No,
+          m1.Type,
+          m.Mtrl_Rv_id,
+          m.Mtrl_Code,
+          m.Material,
+          m.DynamicPara1,
+          m.DynamicPara2,
+          m.DynamicPara3,
+          m.Scrap,
+          m.Weight,
+          m.ScrapWeight,
+          m.MtrlStockID
+        FROM
+            magodmis.mtrlstocklist m,
+            magodmis.material_receipt_register m1
+        WHERE
+          m.Issue = 0
+          AND m.Cust_Code = ${Cust_Code}
+          AND m1.Rv_No = m.rv_No
+          AND m1.RVStatus = 'Received'
+        ORDER BY m.MtrlStockID`,
 
       // `SELECT
       //     m1.RVId,
