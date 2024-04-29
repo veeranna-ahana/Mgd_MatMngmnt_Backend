@@ -372,8 +372,12 @@ mtrlStockListRouter.post("/updateMtrlStockLock3", async (req, res, next) => {
     misQueryMod(
       `UPDATE magodmis.mtrlstocklist
           SET
-              Scrap = - 1,
-              Locked = - 1,
+              DynamicPara1 = '0.00',
+              DynamicPara2 = '0.00',
+              Scrap = -1,
+              Locked = -1,
+              Weight = '0.000',
+              ScrapWeight = '0.000',
               LocationNo = '${req.body.LocationNo}'
           WHERE
               MtrlStockID = '${req.body.MtrlStockID}'`,

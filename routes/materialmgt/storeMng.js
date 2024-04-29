@@ -9,9 +9,15 @@ storeRouter.get("/getResizeMtrlStockList", async (req, res, next) => {
     let Cust_Code = req.query.code;
 
     misQueryMod(
-      `SELECT * FROM magodmis.mtrlstocklist m 
-      WHERE m.Cust_Code like ${Cust_Code} AND not m.Locked AND  not m.Scrap
-      ORDER BY m.Mtrl_Code,  m.MtrlStockID`,
+      `SELECT 
+            *
+        FROM
+            magodmis.mtrlstocklist
+        WHERE
+            Cust_Code LIKE ${Cust_Code} AND Issue = 0  
+            AND Locked = 0
+            AND Scrap = 0
+        ORDER BY Mtrl_Rv_id DESC , Mtrl_Code , MtrlStockID`,
       (err, data) => {
         if (err) logger.error(err);
         res.send(data);
