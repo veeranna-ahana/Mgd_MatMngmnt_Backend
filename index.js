@@ -16,6 +16,10 @@ app.get("/", (req, res) => {
   res.send("hello");
 });
 
+// pdf
+const PDFRouter = require("./routes/materialmgt/PDF");
+app.use("/pdf", PDFRouter);
+
 //customer
 const customerRouter = require("./routes/materialmgt/customer");
 app.use("/customers", customerRouter);
