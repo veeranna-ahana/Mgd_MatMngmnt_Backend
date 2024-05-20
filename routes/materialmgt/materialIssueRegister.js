@@ -58,6 +58,9 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
             RV_Remarks = '${req.body.formHeader.RV_Remarks || ""}',
             TotalWeight = '${parseFloat(
               req.body.formHeader.TotalWeight || 0
+            ).toFixed(3)}',
+            TotalCalculatedWeight = '${parseFloat(
+              req.body.formHeader.TotalCalculatedWeight || 0
             ).toFixed(3)}'
         WHERE
             Iv_Id = '${req.body.formHeader.Iv_Id}'`,
@@ -109,9 +112,13 @@ materialIssueRegisterRouter.post("/updateDCWeight", async (req, res, next) => {
               // , UpDated = ${element.UpDated}
               try {
                 misQueryMod(
-                  `UPDATE magodmis.mtrl_part_issue_details SET TotalWeight = '${parseFloat(
+                  `UPDATE magodmis.mtrl_part_issue_details SET UnitWt = '${parseFloat(
+                    element.UnitWt || 0
+                  ).toFixed(3)}', TotalWeight = '${parseFloat(
                     element.TotalWeight || 0
-                  ).toFixed(3)}'WHERE (Id = '${element.Id}')`,
+                  ).toFixed(3)}', Remarks = '${
+                    element.Remarks || ""
+                  }' WHERE (Id = '${element.Id}')`,
                   (err, data) => {
                     // console.log("data........", data);
                     if (err) logger.error(err);
