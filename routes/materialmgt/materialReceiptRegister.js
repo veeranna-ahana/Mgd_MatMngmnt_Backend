@@ -15,6 +15,7 @@ materialReceiptRegisterRouter.get(
       let type2 = req.query.type2;
       if (req.query.type3) {
         //purchase section
+        console.log("type1", req.query);
         misQueryMod(
           `SELECT * FROM material_receipt_register where RVStatus = '${type1}' and Type = '${type2}' and Cust_Code = 0 order by ReceiptDate DESC`,
           (err, data) => {
@@ -24,7 +25,7 @@ materialReceiptRegisterRouter.get(
         );
       } else {
         misQueryMod(
-          `SELECT * FROM material_receipt_register where RVStatus = '${type1}' and Type = '${type2}' order by ReceiptDate DESC `,
+          `SELECT * FROM material_receipt_register where RVStatus = '${type1}' and Type = '${type2}'   and Cust_Code  not like '0000' order by ReceiptDate DESC `,
           (err, data) => {
             if (err) logger.error(err);
             res.send(data);
