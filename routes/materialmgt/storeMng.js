@@ -68,13 +68,22 @@ storeRouter.get(
       let LocationNo = req.query.location;
 
       misQueryMod(
-        // `SELECT * FROM magodmis.MtrlStocklist WHERE LocationNo='${LocationNo}' AND (not Locked or Scrap )`,
-        `SELECT * FROM magodmis.MtrlStocklist WHERE LocationNo='${LocationNo}' AND (NOT LOCKED OR Scrap ) GROUP BY Cust_Code
-      `,
-        (err, data) => {
-          if (err) logger.error(err);
-          // console.log("dataaaa", data);
-          res.send(data);
+        `SET @@sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')`,
+        (err, groupData) => {
+          if (err) {
+            logger.error(err);
+          } else {
+            misQueryMod(
+              // `SELECT * FROM magodmis.MtrlStocklist WHERE LocationNo='${LocationNo}' AND (not Locked or Scrap )`,
+              `SELECT * FROM magodmis.MtrlStocklist WHERE LocationNo='${LocationNo}' AND (NOT LOCKED OR Scrap ) GROUP BY Cust_Code
+            `,
+              (err, data) => {
+                if (err) logger.error(err);
+                // console.log("dataaaa", data);
+                res.send(data);
+              }
+            );
+          }
         }
       );
     } catch (error) {
