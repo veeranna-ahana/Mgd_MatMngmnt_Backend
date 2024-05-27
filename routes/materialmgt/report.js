@@ -100,6 +100,7 @@ FROM
 ORDER BY B.RV_No`,
       (err, data) => {
         if (err) logger.error(err);
+        console.log("dataaaaaaaaaaaaaa", data);
         res.send(data);
       }
     );
