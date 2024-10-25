@@ -15,7 +15,7 @@ shopfloorUnitIssueRegisterRouter.get(
 
       //   let query = `SELECT * FROM magodmis.mtrlstocklist m WHERE m.cust_Code=${CustCode} AND
       // m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 `;
-      console.log("req.query", req.query);
+      // console.log("req.query", req.query);
 
       //     let query = `SELECT * FROM magodmis.mtrlstocklist m WHERE m.cust_Code=${CustCode} AND
       //  m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 ORDER BY
@@ -37,7 +37,7 @@ shopfloorUnitIssueRegisterRouter.get(
 
       await misQueryMod(query, (err, data) => {
         if (err) logger.error(err);
-        console.log("data1", data);
+        // console.log("data1", data);
         res.send(data);
       });
     } catch (error) {

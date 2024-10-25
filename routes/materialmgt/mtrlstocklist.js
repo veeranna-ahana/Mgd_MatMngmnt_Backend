@@ -48,8 +48,8 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
       accepted,
     } = req.body;
 
-    console.log("accepted", req.body.accepted);
-    console.log("Alll", req.body);
+    // console.log("accepted", req.body.accepted);
+    // console.log("Alll", req.body);
 
     let returnData = null;
     //find shape
@@ -213,7 +213,7 @@ mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
 mtrlStockListRouter.post("/updateAfterRemoveStock", (req, res, next) => {
   try {
     const { rvId, custCode } = req.body;
-    console.log("RvId CustCode", req.body);
+    // console.log("RvId CustCode", req.body);
 
     if (custCode === "0000") {
       misQueryMod(
@@ -259,7 +259,7 @@ mtrlStockListRouter.post("/updateAfterRemoveStock", (req, res, next) => {
               console.error(insertErr);
               return next(insertErr);
             }
-            console.log("insertedData2", insertData);
+            // console.log("insertedData2", insertData);
             res.send(insertData);
           });
         }
