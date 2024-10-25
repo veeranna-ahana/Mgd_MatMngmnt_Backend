@@ -44,6 +44,168 @@ runningNoRouter.post("/updateRunningNoBySrlType", async (req, res, next) => {
   }
 });
 
+// New APIs getNewRunningNo, updateRunNo
+runningNoRouter.get("/getNewRunningNo", async (req, res, next) => {
+  let SrlType = req.query.SrlType;
+  let Period = req.query.Period;
+  let VoucherNoLength = req.query.VoucherNoLength;
+  let ResetValue = req.query.ResetValue;
+  let UnitName = req.query.UnitName;
+
+  const date = new Date();
+  const year = date.getFullYear();
+  const startDate = new Date(`${year}-01-01`);
+  const endDate = new Date(`${year}-12-31`);
+
+  const formattedStartDate = startDate.toISOString().slice(0, 10);
+  const formattedEndDate = endDate.toISOString().slice(0, 10);
+
+  try {
+    // First query to check if the record already exists
+    const selectQuery = `
+      SELECT COUNT(Id) FROM magod_setup.magod_runningno
+      WHERE SrlType='${SrlType}' AND UnitName='${UnitName}' AND Period='${Period}'
+    `;
+
+    setupQueryMod(selectQuery, (selectError, selectResult) => {
+      if (selectError) {
+        logger.error(selectError);
+        return next(selectError); // Returning actual error
+      }
+
+      const count = selectResult[0]["COUNT(Id)"];
+
+      if (count === 0) {
+        // If no record exists, fetch prefix and suffix
+        const selectPrefixQuery = `
+          SELECT * FROM magod_setup.year_prefix_suffix
+          WHERE SrlType='${SrlType}' AND UnitName='${UnitName}'
+        `;
+
+        setupQueryMod(selectPrefixQuery, (prefixError, prefixResult) => {
+          if (prefixError) {
+            logger.error(prefixError);
+            return next(prefixError); // Returning actual error
+          }
+
+          const prefix = prefixResult[0]?.Prefix || "";
+          const suffix = prefixResult[0]?.Suffix || "";
+
+          // Insert the new record if count is 0
+          const insertQuery = `
+            INSERT INTO magod_setup.magod_runningno
+            (UnitName, SrlType, ResetPeriod, ResetValue, EffectiveFrom_date, Reset_date, Running_No, Prefix, Suffix, Length, Period, Running_EffectiveDate)
+            VALUES ('${UnitName}', '${SrlType}', '${ResetPeriod}', ${ResetValue}, '${formattedStartDate}', '${formattedEndDate}', ${ResetValue}, '${prefix}', '${suffix}', ${VoucherNoLength}, '${year}', CURDATE());
+          `;
+
+          setupQueryMod(insertQuery, (insertError, insertResult) => {
+            if (insertError) {
+              logger.error(insertError);
+              return next(insertError);
+            }
+
+            // Fetch the newly inserted Running_No
+            const selectRunningNoQuery = `
+              SELECT * FROM magod_setup.magod_runningno
+              WHERE SrlType='${SrlType}' AND UnitName='${UnitName}'
+              ORDER BY Id DESC LIMIT 1;
+            `;
+
+            setupQueryMod(
+              selectRunningNoQuery,
+              (runningNoError, runningNoResult) => {
+                if (runningNoError) {
+                  logger.error(runningNoError);
+                  return next(runningNoError);
+                }
+
+                // Return the newly inserted Running_No
+                const runningNo = runningNoResult[0]?.Running_No || null;
+                res.json({
+                  message: "Record inserted successfully.",
+                  runningNo: runningNo,
+                  runningNoResult: runningNoResult,
+                });
+              }
+            );
+          });
+        });
+      } else {
+        // If record already exists, fetch the latest Running_No
+        const selectRunningNoQuery = `
+          SELECT * FROM magod_setup.magod_runningno
+          WHERE SrlType='${SrlType}' AND UnitName='${UnitName}'
+          ORDER BY Id DESC LIMIT 1;
+        `;
+
+        setupQueryMod(
+          selectRunningNoQuery,
+          (runningNoError, runningNoResult) => {
+            if (runningNoError) {
+              logger.error(runningNoError);
+              return next(runningNoError);
+            }
+
+            // Return the existing Running_No from the query
+            const runningNo = runningNoResult[0]?.Running_No || null;
+
+            res.json({
+              message: "Record already exists.",
+              runningNo: runningNo,
+              runningNoResult: runningNoResult,
+            });
+          }
+        );
+      }
+    });
+  } catch (error) {
+    logger.error(error);
+    next(error);
+  }
+});
+
+runningNoRouter.post("/updateRunNo", async (req, res, next) => {
+  try {
+    let { SrlType, Period, RunningNo, UnitName } = req.body;
+    console.log("req.body", req.body);
+
+    const prefixQuery = `
+      SELECT Prefix, Suffix FROM magod_setup.year_prefix_suffix
+      WHERE SrlType='${SrlType}' AND UnitName='${UnitName}'
+    `;
+
+    setupQueryMod(prefixQuery, async (prefixError, prefixResult) => {
+      if (prefixError) {
+        logger.error(prefixError);
+        return next(prefixError);
+      }
+
+      const prefix =
+        prefixResult[0]?.Prefix !== null ? prefixResult[0]?.Prefix : "";
+      const suffix =
+        prefixResult[0]?.Suffix !== null ? prefixResult[0]?.Suffix : "";
+
+      // Once prefix and suffix are fetched, update the running number
+      const updateQuery = `
+        UPDATE magod_runningno
+        SET Running_No = "${RunningNo}", Prefix = "${prefix}", Suffix = "${suffix}"
+        WHERE SrlType = "${SrlType}" AND Period = "${Period}"
+      `;
+
+      setupQueryMod(updateQuery, (err, data) => {
+        if (err) {
+          logger.error(err);
+          return next(err);
+        }
+        console.log("data", data);
+        res.send(data);
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 runningNoRouter.post("/insertRunningNo", async (req, res, next) => {
   try {
     //console.log("insertRunningNo", req.body);
