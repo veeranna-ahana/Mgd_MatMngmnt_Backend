@@ -22,6 +22,9 @@ shopfloorUnitIssueRegisterRouter.get(
 			let shape = req.query.shape;
 			let para1 = req.query.para1;
 			let para2 = req.query.para2;
+			//   let query = `SELECT * FROM magodmis.mtrlstocklist m WHERE m.cust_Code=${CustCode} AND
+			// m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 `;
+			// console.log("req.query", req.query);
 
 			//   let query = `SELECT * FROM magodmis.mtrlstocklist m WHERE m.cust_Code=${CustCode} AND
 			// m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 `;
