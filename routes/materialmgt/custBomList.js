@@ -17,4 +17,21 @@ custBomListRouter.get("/allCustBomList", async (req, res, next) => {
   }
 });
 
+custBomListRouter.post("/getCustBomId", async (req, res, next) => {
+  const { partId, cust_Code } = req.body;
+  console.log("partId", partId);
+  try {
+    misQueryMod(
+      `Select * from magodmis.cust_bomlist where PartId = '${partId}' and Cust_code = '${cust_Code}'`,
+      (err, data) => {
+        if (err) logger.error(err);
+        console.log("Dataaaaaaaaa", data);
+        res.send(data);
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = custBomListRouter;

@@ -10,13 +10,22 @@ shopfloorUnitIssueRegisterRouter.get(
 	async (req, res, next) => {
 		try {
 			let MtrlCode = req.query.MtrlCode;
-			let CustCode = req.query.CustCode;
+			// VEERANNA PURCHASE CHANGES 17/10/24
+			// let CustCode = req.query.CustCode;
+			if (req.query.CustMtrl === "Magod") {
+				CustCode = 0000;
+			} else {
+				CustCode = req.query.CustCode;
+			}
+
+			console.log("CustCode", CustCode);
 			let shape = req.query.shape;
 			let para1 = req.query.para1;
 			let para2 = req.query.para2;
 
 			//   let query = `SELECT * FROM magodmis.mtrlstocklist m WHERE m.cust_Code=${CustCode} AND
 			// m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 `;
+			console.log("req.query", req.query);
 
 			//     let query = `SELECT * FROM magodmis.mtrlstocklist m WHERE m.cust_Code=${CustCode} AND
 			//  m.Mtrl_Code='${MtrlCode}' And  m.Locked=0 AND m.Scrap=0 ORDER BY
@@ -35,10 +44,11 @@ shopfloorUnitIssueRegisterRouter.get(
 			} else if (shape === "Tube Round") {
 				query += `AND (DynamicPara1>=${para1} )`;
 			}
-			console.log("query = ", query);
+			// console.log("query = ", query);
 
 			await misQueryMod(query, (err, data) => {
 				if (err) logger.error(err);
+				console.log("data1", data);
 				res.send(data);
 			});
 		} catch (error) {
