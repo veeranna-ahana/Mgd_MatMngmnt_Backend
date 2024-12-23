@@ -15,6 +15,9 @@ shopfloorMaterialIssueRegisterRouter.post(
                 (${IV_No}, "${Issue_date}", ${NC_ProgramNo}, ${QtyIssued},${QtyReturned},${Ncid}, CURTIME())`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            "successfully inserted data into shopfloor_material_issueregister"
+          );
           res.send(data);
         }
       );
@@ -35,6 +38,9 @@ shopfloorMaterialIssueRegisterRouter.post(
         WHERE s.IssueID = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully updated shopfloor_material_issueregister with IssueID=${id}`
+          );
           res.send(data);
         }
       );

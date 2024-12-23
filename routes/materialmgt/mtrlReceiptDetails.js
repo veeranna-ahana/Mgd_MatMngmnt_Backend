@@ -15,6 +15,9 @@ mtrlReceiptDetailsRouter.get(
         `SELECT * FROM mtrlreceiptdetails where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully fetched data from mtrlreceiptdetails for Mtrl_Rv_id = ${id}`
+          );
           res.json(data);
         }
       );
@@ -37,6 +40,9 @@ mtrlReceiptDetailsRouter.get(
         `SELECT * FROM mtrlreceiptdetails where RvID = ${id} order by RvID`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully fetched data from mtrlreceiptdetails for RvID=${id}`
+          );
           res.send(data);
         }
       );
@@ -83,6 +89,7 @@ mtrlReceiptDetailsRouter.post(
         `insert into  mtrlreceiptdetails (RvID,Srl,Cust_Code,Mtrl_Code,Material,ShapeMtrlID,ShapeID, DynamicPara1,DynamicPara2,DynamicPara3,Qty,Inspected,Accepted,TotalWeightCalculated,TotalWeight,LocationNo,Updated,QtyRejected, QtyUsed,QtyReturned) values ("${rvId}","${srl}","${custCode}","${mtrlCode}","${material}",${shapeMtrlId},${shapeID}, ${dynamicPara1},${dynamicPara2},${dynamicPara3},${qty},${inspected},${accepted},${totalWeightCalculated},${totalWeight},"${locationNo}",${updated},"${qtyRejected}","${qtyUsed}","${qtyReturned}")`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info("successfully inserted data into mtrlreceiptdetails");
           res.send(data);
         }
       );
@@ -176,6 +183,9 @@ mtrlReceiptDetailsRouter.post(
         (err, data) => {
           if (err) logger.error(err);
           // console.log("updated data", data);
+          logger.info(
+            `successfully updated mtrlreceiptdetails data with Mtrl_Rv_id = ${id} `
+          );
           res.json(data);
         }
       );
@@ -226,6 +236,9 @@ mtrlReceiptDetailsRouter.post(
         `update mtrlreceiptdetails set Srl = "${srl}",Cust_Code = "${custCode}",Mtrl_Code = "${mtrlCode}",Material = "${material}",ShapeMtrlID = ${shapeMtrlId},ShapeID = ${shapeID}, DynamicPara1 = ${dynamicPara1},DynamicPara2 = ${dynamicPara2},DynamicPara3 = ${dynamicPara3},Qty = ${qty},Inspected = ${inspected},Accepted = ${accepted}, TotalWeightCalculated = ${totalWeightCalculated},TotalWeight = ${totalWeight},LocationNo = "${locationNo}",UpDated = "${updated}",QtyRejected = "${qtyRejected}",QtyUsed = "${qtyUsed}",QtyReturned = "${qtyReturned}" where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully updated mtrlreceiptdetails with Mtrl_Rv_id = ${id}`
+          );
 
           res.send(data);
         }
@@ -247,6 +260,9 @@ mtrlReceiptDetailsRouter.post(
         (err, data) => {
           if (err) logger.error(err);
           // console.log("data", data);
+          logger.info(
+            `successfully updated mtrlreceiptdetails for Mtrl_Rv_id = ${id}`
+          );
           res.send(data);
         }
       );
@@ -266,6 +282,9 @@ mtrlReceiptDetailsRouter.post(
         `delete from mtrlreceiptdetails where Mtrl_Rv_id = ${id}`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully deleted data from mtrlreceiptdetails for Mtrl_Rv_id = ${id}`
+          );
           res.send(data);
         }
       );

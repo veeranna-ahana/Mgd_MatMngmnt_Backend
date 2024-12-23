@@ -2,6 +2,7 @@ const shopFloorReturnRouter = require("express").Router();
 const { misQueryMod } = require("../../helpers/dbconn");
 const req = require("express/lib/request");
 const { logger } = require("../../helpers/logger");
+const { log } = require("winston");
 
 shopFloorReturnRouter.get("/getFirstMainTable", async (req, res, next) => {
   try {
@@ -19,6 +20,7 @@ shopFloorReturnRouter.get("/getFirstMainTable", async (req, res, next) => {
 
       (err, data) => {
         if (err) logger.error(err);
+        logger.info("successfully fetched table data");
         res.send(data);
       }
     );
@@ -37,6 +39,9 @@ shopFloorReturnRouter.get("/getSecondMainTable", async (req, res, next) => {
 
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(
+          "successfully fetched data from ncprogrammtrlallotmentlist"
+        );
         res.send(data);
       }
     );

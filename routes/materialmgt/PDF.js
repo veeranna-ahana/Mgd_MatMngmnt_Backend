@@ -16,6 +16,7 @@ PDFRouter.post("/getPDFData", async (req, res, next) => {
           console.log("err", err);
         } else {
           //   console.log("pdfData", pdfData);
+          logger.info("successfully fetched data from magodlaser_units");
 
           res.send(pdfData);
         }

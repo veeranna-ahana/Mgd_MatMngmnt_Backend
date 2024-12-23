@@ -12,6 +12,7 @@ customerRouter.get("/allcustomers", async (req, res, next) => {
       "Select * from magodmis.cust_data order by Cust_name asc",
       (err, data) => {
         if (err) logger.error(err);
+        logger.info("Successfully fetched customer data.");
         res.send(data);
       }
     );
@@ -28,6 +29,9 @@ customerRouter.get("/getCustomerByCustCode", async (req, res, next) => {
       (err, data) => {
         // console.log("getCustomerByCustCode", data);
         if (err) logger.error(err);
+        logger.info(
+          `Successfully fetched from cust_data with Cust_Code = ${code}`
+        );
         res.send(data[0]);
       }
     );

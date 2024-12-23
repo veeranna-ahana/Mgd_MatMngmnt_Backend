@@ -30,6 +30,9 @@ ncprogrammtrlallotmentlistRouter.post(
           ${NCPara1}, ${NCPara2}, ${NCPara3}, ${Para1}, ${Para2}, ${Para3}, ${IssueId}, ${NoReturn},${Ncid})`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            "successfully inserted data into ncprogrammtrlallotmentlist"
+          );
           res.send(data);
         }
       );
@@ -50,6 +53,9 @@ ncprogrammtrlallotmentlistRouter.post(
         WHERE n.NcPgmMtrlId=${id}`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully updated ncprogrammtrlallotmentlist for NcPgmMtrlId=${id}`
+          );
           res.send(data);
         }
       );

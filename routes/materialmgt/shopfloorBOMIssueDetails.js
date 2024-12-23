@@ -23,6 +23,9 @@ shopfloorBOMIssueDetailsRouter.post(
         (err, data) => {
           if (err) logger.error(err);
           // console.log("BOMIssueDetails", data);
+          logger.info(
+            "successfully inserted data into shopfloor_bom_issuedetails"
+          );
           res.send(data);
         }
       );

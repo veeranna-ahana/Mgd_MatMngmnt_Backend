@@ -143,6 +143,9 @@ app.use("/report", reportRouter);
 const userRouter = require("./routes/materialmgt/user");
 app.use("/user", userRouter);
 
+const savePDF = require("./routes/savePDFServer/savePDFServer.js");
+app.use("/PDF", savePDF);
+
 /*app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.send({
