@@ -2,6 +2,7 @@ const mtrlStockListRouter = require("express").Router();
 const { misQueryMod } = require("../../helpers/dbconn");
 const req = require("express/lib/request");
 const { logger } = require("../../helpers/logger");
+const { log } = require("winston");
 
 mtrlStockListRouter.get("/checkStockAvailable", async (req, res, next) => {
   try {
@@ -10,6 +11,9 @@ mtrlStockListRouter.get("/checkStockAvailable", async (req, res, next) => {
       `Select * from magodmis.mtrlstocklist where RV_No =  "${rvno}"`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(
+          `successfully fetched data from mtrlstocklist with RV_No="${rvno}"`
+        );
         res.send(data);
       }
     );
@@ -58,8 +62,12 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
       (err, data) => {
         if (err) {
           logger.error(err);
+
           return;
         }
+        logger.info(
+          `successfully fetched data from shapes with ShapeID=${shapeID}`
+        );
         if (data && data.length > 0 && data[0].Shape) {
           shape = data[0].Shape;
           for (let i = 0; i < accepted; i++) {
@@ -68,6 +76,7 @@ mtrlStockListRouter.post("/insertMtrlStockList", async (req, res, next) => {
               `insert into  mtrlstocklist (MtrlStockID,Mtrl_Rv_id,Cust_Code,Customer,RV_No,Cust_Docu_No,Mtrl_Code,Shape,Material,DynamicPara1,DynamicPara2,DynamicPara3,DynamicPara4,Locked,Scrap,Issue,Weight,ScrapWeight,IV_No,NCProgramNo,LocationNo) values ("${mtrlStockId}",${mtrlRvId},"${custCode}","${customer}","${rvNo}","${custDocuNo}","${mtrlCode}","${shape}","${material}",${dynamicPara1},${dynamicPara2},${dynamicPara3},${dynamicPara4},${locked},${scrap},${issue},${weight},${scrapWeight},"${ivNo}","${ncProgramNo}","${locationNo}")`,
               (err, data1) => {
                 if (err) logger.error(err);
+                logger.info("successfully inserted data into mtrlstocklist");
                 //returnData = data1;
                 //res.send(data);
               }
@@ -156,6 +165,9 @@ mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
           logger.error(err);
           return res.send(err);
         }
+        logger.info(
+          `successfully fetched count from mtrlstocklist for Mtrl_Rv_id = '${Mtrl_Rv_id}'`
+        );
         countResult = result;
 
         // Query to check if material is in use for production
@@ -164,8 +176,12 @@ mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
           (err, result) => {
             if (err) {
               logger.error(err);
+
               return res.send(err);
             }
+            logger.info(
+              `successfully fetched inUseCount from mtrlstocklist for Mtrl_Rv_id = '${Mtrl_Rv_id}'`
+            );
             inUseResult = result;
 
             // Check conditions similar to React code
@@ -186,8 +202,12 @@ mtrlStockListRouter.post("/deleteMtrlStockByRVNo", async (req, res, next) => {
                 (err, result) => {
                   if (err) {
                     logger.error(err);
+
                     return res.send(err);
                   }
+                  logger.info(
+                    `successfully deleted data from MtrlStockList with Mtrl_Rv_id = '${Mtrl_Rv_id}'`
+                  );
                   deletionResult = result;
 
                   // Send combined response
@@ -220,9 +240,12 @@ mtrlStockListRouter.post("/updateAfterRemoveStock", (req, res, next) => {
         `DELETE FROM magodmis.magod_material_sales_register WHERE RvID = '${rvId}'`,
         (deleteErr, deleteData) => {
           if (deleteErr) {
-            console.error(deleteErr);
+            logger.error(deleteErr);
             // return next(deleteErr);
           }
+          logger.info(
+            `successfully deleted data from magod_material_sales_register with RvID = '${rvId}'`
+          );
 
           const insertQuery1 = `INSERT INTO magodmis.magod_Material_Sales_Register(Cust_Code, Cust_Name, MDate, Mtrl_Type, Weight, Rv_No, RvID, Cust_Dc_No, txnType)
               SELECT  m.Cust_Code, m.Customer, m.RV_Date, m.Material, ROUND(SUM(m.TotalWeightCalculated), 2) as tw, m.Rv_no, m.RvID, m.Cust_Docu_No, 'Receive'
@@ -232,9 +255,13 @@ mtrlStockListRouter.post("/updateAfterRemoveStock", (req, res, next) => {
 
           misQueryMod(insertQuery1, (insertErr, insertData) => {
             if (insertErr) {
-              console.error(insertErr);
+              logger.error(insertErr);
+
               return next(insertErr);
             }
+            logger.info(
+              "successfully inserted data into magod_Material_Sales_Register"
+            );
             // console.log("insertedData1", insertData);
             res.send(insertData);
           });
@@ -245,9 +272,13 @@ mtrlStockListRouter.post("/updateAfterRemoveStock", (req, res, next) => {
         `DELETE FROM magodmis.customer_material_return_register WHERE RvID = '${rvId}'`,
         (deleteErr, deleteData) => {
           if (deleteErr) {
-            console.error(deleteErr);
+            logger.error(deleteErr);
             return next(deleteErr);
           }
+
+          logger.info(
+            `successfully deleted data from customer_material_return_register with RvID = '${rvId}'`
+          );
 
           const insertQuery2 = `INSERT INTO magodmis.customer_material_return_register(Cust_Code, Cust_Name, MDate, Mtrl_Type, Weight, Rv_No, RvID, Cust_Dc_No, txnType)
             SELECT  m.Cust_Code, m.Customer, m.RV_Date, m.Material, ROUND(SUM(m.TotalWeightCalculated), 2) as tw, m.Rv_no, m.RvID, m.Cust_Docu_No, 'Receive'
@@ -256,9 +287,12 @@ mtrlStockListRouter.post("/updateAfterRemoveStock", (req, res, next) => {
 
           misQueryMod(insertQuery2, (insertErr, insertData) => {
             if (insertErr) {
-              console.error(insertErr);
+              logger.error(insertErr);
               return next(insertErr);
             }
+            logger.info(
+              "successfully inserted data into customer_material_return_register"
+            );
             // console.log("insertedData2", insertData);
             res.send(insertData);
           });
@@ -326,6 +360,9 @@ mtrlStockListRouter.post("/updateMtrlStockLock", async (req, res, next) => {
       `UPDATE magodmis.mtrlstocklist SET Locked=1 WHERE MtrlStockID='${id}'`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(
+          `successfully updated mtrlstocklist for MtrlStockID='${id}'`
+        );
         res.send(data);
       }
     );
@@ -345,6 +382,9 @@ mtrlStockListRouter.post("/updateMtrlStockLock1", async (req, res, next) => {
       WHERE m.MtrlStockID='${MtrlStockID}'`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(
+          `successfully updated mtrlstocklist for MtrlStockID='${MtrlStockID}'`
+        );
         res.send(data);
       }
     );
@@ -363,6 +403,9 @@ mtrlStockListRouter.post("/updateMtrlStockLock2", async (req, res, next) => {
       WHERE m.MtrlStockID='${MtrlStockID}'`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(
+          `successfully updated mtrlstocklist for MtrlStockID='${MtrlStockID}'`
+        );
         res.send(data);
       }
     );
@@ -399,6 +442,9 @@ mtrlStockListRouter.post("/updateMtrlStockLock3", async (req, res, next) => {
       // WHERE m.MtrlStockID='${MtrlStockID}'`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(
+          `successfully updated mtrlstocklist for MtrlStockID = '${req.body.MtrlStockID}'`
+        );
         // console.log("response", data);
         res.send(data);
       }
@@ -441,10 +487,11 @@ mtrlStockListRouter.post("/insertByMtrlStockID", async (req, res, next) => {
       `INSERT INTO magodmis.mtrlstocklist (MtrlStockID,Mtrl_Rv_id, Cust_Code, Customer, RV_No, Cust_Docu_No, Mtrl_Code, Shape, 
       Material, DynamicPara1, DynamicPara2, DynamicPara3, LocationNo, Weight) 
       SELECT  ${MtrlStockIDNew}, m.Mtrl_Rv_id, m.Cust_Code, m.Customer, m.RV_No, m.Cust_Docu_No, m.Mtrl_Code, m.Shape, m.Material, 
-      ${DynamicPara1}, ${DynamicPara2},${DynamicPara3}, ${LocationNo}, ${Weight} FROM magodmis.mtrlstocklist m 
+      ${DynamicPara1}, ${DynamicPara2},${DynamicPara3}, '${LocationNo}', ${Weight} FROM magodmis.mtrlstocklist m 
       WHERE m.MtrlStockID= '${MtrlStockID}' `,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info("successfully inserted data into mtrlstocklist");
         res.send(data);
       }
     );
@@ -465,6 +512,9 @@ mtrlStockListRouter.get(
         // `Select * from magodmis.mtrlstocklist where MtrlStockID = '${req.query.MtrlStockID}'`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully fetched data from mtrlstocklist for MtrlStockID = '${req.query.MtrlStockID}'`
+          );
           res.send(data);
           // console.log("getDataByMtrlStockIdResize.....data.......", data);
         }
@@ -485,6 +535,7 @@ mtrlStockListRouter.post(
 
         (err, data) => {
           if (err) logger.error(err);
+          logger.info("successfully inserted data into mtrlstocklist");
           // console.log("insert done.......", data);
           res.send(data);
         }

@@ -9,6 +9,7 @@ mtrlDataRouter.get("/allmtrldata", async (req, res, next) => {
       "Select * from magodmis.mtrl_data order by Mtrl_Code asc",
       (err, data) => {
         if (err) logger.error(err);
+        logger.info("successfully fetched data from mtrl_data");
         res.send(data);
       }
     );
@@ -29,6 +30,9 @@ mtrlDataRouter.get("/getRowByMtrlCode", async (req, res, next) => {
       (err, data) => {
         if (err) logger.error(err);
         // console.log("data", data[0]);
+        logger.info(
+          `successfully fetched data from mtrl_data for Mtrl_Code=${code}`
+        );
         res.send(data[0]);
       }
     );
@@ -49,6 +53,9 @@ mtrlDataRouter.get("/getGradeID", async (req, res, next) => {
       (err, data) => {
         if (err) logger.error(err);
         // console.log("data", data[0]);
+        logger.info(
+          `Successfully fetched Material from mtrlgrades for MtrlGradeID=${gradeid}`
+        );
         res.send(data[0]);
       }
     );
@@ -72,6 +79,9 @@ mtrlDataRouter.get("/getSpecific_Wt", async (req, res, next) => {
       (err, data) => {
         if (err) logger.error(err);
         // console.log("data", data[0]);
+        logger.info(
+          `successfully fetched data from mtrl_data and mtrlgrades with Mtrl_Code=${code}`
+        );
         res.send(data[0]);
       }
     );

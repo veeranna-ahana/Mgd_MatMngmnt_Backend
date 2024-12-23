@@ -42,7 +42,9 @@ shopfloorPartIssueRegisterRouter.post(
           (${IV_No}, "${Issue_date}", ${NC_ProgramNo}, ${QtyIssued},${QtyReturned},${QtyUsed},${Ncid})`,
         (err, data) => {
           if (err) logger.error(err);
-          console.log("register", data);
+          logger.info(
+            "successfully inserted data into shopfloor_part_issueregister"
+          );
           res.send(data);
         }
       );

@@ -23,6 +23,7 @@ shapeRouter.get("/getRowByShape", async (req, res, next) => {
       `Select * from magodmis.shapes where Shape =  "${shape}"`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(`successfully fetched data from shapes for Shape=${shape}`);
         res.send(data[0] || {});
       }
     );

@@ -10,6 +10,7 @@ ncprogramsRouter.post("/updateQtyAllotedncprograms", async (req, res, next) => {
       `UPDATE magodmis.ncprograms n SET n.QtyAllotted=n.QtyAllotted-${Qty} WHERE n.Ncid= ${Id}`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(`successfully updated ncprograms for Ncid= ${Id}`);
         res.send(data);
       }
     );
@@ -27,6 +28,7 @@ ncprogramsRouter.post(
         `UPDATE magodmis.ncprograms n SET n.QtyAllotted=n.QtyAllotted+${Qty}, n.PStatus='Processing' WHERE n.Ncid= ${Id}`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(`successfully updated ncprograms with Ncid=${Id}`);
           res.send(data);
         }
       );
@@ -45,6 +47,7 @@ ncprogramsRouter.post(
         `UPDATE magodmis.ncprograms n SET n.QtyAllotted=n.QtyAllotted+${Qty}, n.PStatus='Cutting' WHERE n.Ncid= ${Id}`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(`successfully updated ncprograms for Ncid=${Id}`);
           res.send(data);
         }
       );
@@ -61,6 +64,9 @@ ncprogramsRouter.get("/getRowByNCID", async (req, res, next) => {
       `Select * from magodmis.ncprograms where Ncid = ${id}`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(
+          `successfully fetched data from ncprograms with Ncid = ${id}`
+        );
         res.send(data[0]);
       }
     );

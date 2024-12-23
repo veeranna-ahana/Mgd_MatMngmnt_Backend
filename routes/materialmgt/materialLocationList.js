@@ -11,6 +11,7 @@ materialLocationListRouter.get(
         "Select * from magod_setup.material_location_list order by LocationNo asc",
         (err, data) => {
           if (err) logger.error(err);
+          logger.info("successfully fetched material_location_list data");
           res.send(data);
         }
       );

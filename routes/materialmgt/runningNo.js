@@ -6,7 +6,6 @@ const { logger } = require("../../helpers/logger");
 runningNoRouter.get("/getRunningNoBySrlType", async (req, res, next) => {
   try {
     let SrlType = req.query.SrlType;
-    console.log("SrlType..........", SrlType);
     let Period = req.query.Period;
 
     // let UnitName = req.query.UnitName;
@@ -19,7 +18,6 @@ runningNoRouter.get("/getRunningNoBySrlType", async (req, res, next) => {
       // `Select * from magod_setup.magod_runningno where SrlType = "${SrlType}" and Period = "${Period}" and UnitName="${UnitName}"`,
       (err, data) => {
         if (err) logger.error(err);
-        console.log("rnno_data......", data);
         res.send(data);
       }
     );
@@ -336,6 +334,7 @@ runningNoRouter.post("/insertRunNoRow", async (req, res, next) => {
             logger.error(insertError);
             return next(insertResult);
           }
+          logger.info("successfully inserted data into magod_runningno");
 
           res.json({ message: "Record inserted successfully." });
         });

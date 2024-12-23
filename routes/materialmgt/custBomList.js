@@ -9,6 +9,7 @@ custBomListRouter.get("/allCustBomList", async (req, res, next) => {
       "Select * from magodmis.cust_bomlist order by PartDescription asc",
       (err, data) => {
         if (err) logger.error(err);
+        logger.info("successfully fetched cust_bomlist data");
         res.send(data);
       }
     );
@@ -25,6 +26,10 @@ custBomListRouter.post("/getCustBomId", async (req, res, next) => {
       `Select * from magodmis.cust_bomlist where PartId = '${partId}' and Cust_code = '${cust_Code}'`,
       (err, data) => {
         if (err) logger.error(err);
+        logger.info(
+          `successfully fetched custBomId for PartId=${partId} and cust_code=${cust_Code}`
+        );
+
         console.log("Dataaaaaaaaa", data);
         res.send(data);
       }

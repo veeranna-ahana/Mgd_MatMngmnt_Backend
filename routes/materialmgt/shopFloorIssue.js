@@ -181,6 +181,9 @@ AND o.Type='${type}' and HasBOM = ${hasbom}
 ORDER BY n.Ncid desc`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully selected data for Type=${type} and HasBOM = ${hasbom}`
+          );
           res.send(data);
         }
       );
@@ -208,6 +211,9 @@ shopFloorIssueRouter.get(
         `,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully fetched data with Type='${type}' and HasBOM = ${hasbom}`
+          );
           res.send(data);
         }
       );
@@ -237,6 +243,9 @@ shopFloorIssueRouter.get(
           `,
           (err, data) => {
             if (err) logger.error(err);
+            logger.info(
+              `successfully fetched data with Type='${type}', HasBOM = ${hasbom} and machine='${machine}'`
+            );
             res.send(data);
           }
         );
@@ -282,6 +291,9 @@ shopFloorIssueRouter.get(
         `,
           (err, data) => {
             if (err) logger.error(err);
+            logger.info(
+              `successfully fetched data with Type='${type}', HasBOM = ${hasbom} and machine='${machine}' and MProcess='${process}'`
+            );
             res.send(data);
           }
         );
@@ -297,6 +309,9 @@ shopFloorIssueRouter.get(
           ORDER BY n.Ncid desc`,
           (err, data) => {
             if (err) logger.error(err);
+            logger.info(
+              `successfully fetched data with Type='${type}', HasBOM = ${hasbom} and machine='${machine}' and MProcess='${process}'`
+            );
             res.send(data);
           }
         );
@@ -327,6 +342,9 @@ shopFloorIssueRouter.get(
           ORDER BY n.Ncid desc`,
         (err, data) => {
           if (err) logger.error(err);
+          logger.info(
+            `successfully fetched data with Type='${type}', HasBOM = ${hasbom}, machine='${machine}' MProcess='${process}' and Mtrl_Code = '${material}'`
+          );
           res.send(data);
         }
       );

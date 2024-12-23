@@ -19,6 +19,9 @@ shopFloorAllotmentRouter.get(
         (err, data) => {
           if (err) logger.error(err);
           //console.log("data received");
+          logger.info(
+            `successfully fetched first table data  with Ncid = ${id}`
+          );
           res.send(data);
         }
       );
@@ -33,7 +36,7 @@ shopFloorAllotmentRouter.get(
   async (req, res, next) => {
     try {
       let id = req.query.id;
-      console.log("CustBOM_Id", id);
+
       misQueryMod(
         `SELECT  Sum(m.QtyAccepted- m.QtyIssued - m.QtyReturned)  as QtyAvialable
           FROM magodmis.mtrl_part_receipt_details m,magodmis.material_receipt_register m1 
@@ -43,6 +46,7 @@ shopFloorAllotmentRouter.get(
         (err, data) => {
           res.send(data);
           if (err) logger.error(err);
+          logger.info(`successfully fecthed QtyAvialable`);
         }
       );
     } catch (error) {
